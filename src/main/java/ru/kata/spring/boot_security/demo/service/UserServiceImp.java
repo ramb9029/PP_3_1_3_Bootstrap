@@ -1,18 +1,21 @@
 package ru.kata.spring.boot_security.demo.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import ru.kata.spring.boot_security.demo.dao.RoleDaoImp;
+import ru.kata.spring.boot_security.demo.dao.UserDao;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
-import ru.kata.spring.boot_security.demo.repository.RoleRepository;
-import ru.kata.spring.boot_security.demo.repository.UserRepository;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -22,13 +25,15 @@ import java.util.stream.Collectors;
 @EnableJpaRepositories("ru.kata.spring.boot_security")
 public class UserServiceImp implements UserService {
 
-    private final UserRepository userRepository;
-    private final RoleRepository roleRepository;
+    private final UserDao userDao;
+    private final ApplicationContext context;
+    private final RoleDaoImp roleDaoImp;
 
     @Autowired
-    public UserServiceImp(UserRepository userRepository, RoleRepository roleRepository) {
-        this.userRepository = userRepository;
-        this.roleRepository = roleRepository;
+    public UserServiceImp(UserDao userDao, ApplicationContext context, RoleDaoImp roleDaoImp) {
+        this.userDao = userDao;
+        this.context = context;
+        this.roleDaoImp = roleDaoImp;
     }
 
     @Override
@@ -50,42 +55,53 @@ public class UserServiceImp implements UserService {
     public boolean saveUser(User user, String[] rolesFromHtml) {
         Set<Role> roleSet = user.getRoles();
         for (String roleId : rolesFromHtml) {
-            roleSet.add(roleRepository.findById(Long.valueOf(roleId)).get());
+            roleSet.add(roleDaoImp.findById(Long.valueOf(roleId)));
         }
-        userRepository.save(user);
+        setEncryptedPassword(user);
+        userDao.saveUser(user);
         return true;
     }
 
 
     @Override
     public boolean deleteUser(Long userId) {
-        if (userRepository.findById(userId).isPresent()) {
-            userRepository.deleteById(userId);
-            return true;
+        if (userDao.findUserById(userId) == null) {
+            return false;
         }
-        return false;
+        userDao.deleteUser(userId);
+        return true;
     }
 
 
     @Override
     public User findUserById(Long id) {
-        return userRepository.findById(id).orElse(null);
+        return userDao.findUserById(id);
     }
 
 
     @Override
     public void updateUser(User user) {
-        userRepository.save(user);
+        User userFromDB = findUserById(user.getId());
+        if (userFromDB != null) {
+            user.setRoles(Collections.singleton(new Role(1L, "ROLE_USER")));
+            user.setPassword(userFromDB.getPassword());
+            userDao.updateUser(user);
+        }
     }
 
 
     @Override
     public List<User> getUsers() {
-        return userRepository.findAll();
+        return userDao.getUsers();
     }
 
     @Override
     public User findByUsername(String username) {
-        return userRepository.findByUsername(username);
+        return userDao.findByUsername(username);
+    }
+
+    public void setEncryptedPassword(User user) {
+        PasswordEncoder passwordEncoder = context.getBean(PasswordEncoder.class);
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
     }
 }

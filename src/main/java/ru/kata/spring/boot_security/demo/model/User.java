@@ -27,6 +27,6 @@ public class User {
     private String email;
     @Column(name = "password")
     private String password;
-    @ManyToMany(cascade = CascadeType.REFRESH, fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles;
 }

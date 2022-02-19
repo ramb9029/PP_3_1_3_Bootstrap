@@ -9,6 +9,10 @@
     <meta charset="UTF-8">
     <title>Users</title>
 </head>
+<script src="https://code.jquery.com/jquery-3.5.1.js"
+        integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.min.js"></script>
 <body style="font-size: 18px;">
 <div class="container-fluid">
     <nav style="color: white; display: flex; justify-content: space-between;"
@@ -202,47 +206,12 @@
         </div>
     </div>
 </div>
-
-<script src="https://code.jquery.com/jquery-3.5.1.js"
-        integrity="sha256-QWo7LDvxbWT2tbbQ97B53yJnYU3WhH/C8ycbRAkjPDc=" crossorigin="anonymous"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.min.js"></script>
-<script type="text/javascript" th:inline="javascript">
-    var $editRow = null;
-    $(".edit").click(function (e) {
-        $editRow = $(this).closest("tr");
-        $(".userId").val($editRow.find(".uid").text());
-        $(".userName").val($editRow.find(".uname").text());
-        $(".userLastName").val($editRow.find(".ulast").text());
-        $(".userAge").val($editRow.find(".uage").text());
-        $(".userEmail").val($editRow.find(".uemail").text());
-        var select = $('#selected');
-        var roles = [[${allRoles}]];
-        for (var i = 0; i < roles.length; i++) {
-            if ($('#select option').length !== roles.length) {
-                var o = new Option(roles[i].name, roles[i].id);
-                select.append(o);
-            }
-        }
-        $("#editUserModal").modal('show');
-    });
-    $(".del").click(function (e) {
-        $editRow = $(this).closest("tr");
-        $(".userId").val($editRow.find(".uid").text());
-        $(".userName").val($editRow.find(".uname").text());
-        $(".userLastName").val($editRow.find(".ulast").text());
-        $(".userAge").val($editRow.find(".uage").text());
-        $(".userEmail").val($editRow.find(".uemail").text());
-        var select = $('#select');
-        var roles = [[${allRoles}]];
-        for (var i = 0; i < roles.length; i++) {
-            if ($('#select option').length !== roles.length) {
-                var o = new Option(roles[i].name, roles[i].id);
-                select.append(o);
-            }
-        }
-        $("#delUserModal").modal('show');
-    });
+<script th:inline="javascript">
+    var roles = [[${allRoles}]];
+    // thymeleaf не может передавать данные во внешние файлы src. Только внутри хтмл. Поэтому без этого велосипеда не обойтись.
+    //Я потратил два дня что бы убедится в этом. Надеюсь не надо переделывать на ксс и прочие варинаты.
+    // И простите что нет RoleService RoleServiceImp
 </script>
+<script type="text/javascript" th:src="@{/js/users.js}" ></script>
 </body>
 </html>
