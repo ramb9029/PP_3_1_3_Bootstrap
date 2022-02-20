@@ -19,12 +19,11 @@ import java.util.List;
 public class AdminController {
     private final UserService service;
     private final RoleDao roleDao;
-    private final PasswordEncoder passwordEncoder;
+
     @Autowired
     public AdminController(UserService service, RoleDao roleDao, PasswordEncoder passwordEncoder) {
         this.service = service;
         this.roleDao = roleDao;
-        this.passwordEncoder = passwordEncoder;
     }
 
     @GetMapping(value = "/users")
@@ -46,7 +45,6 @@ public class AdminController {
 
     @PostMapping("/add_user")
     public String addUser(@ModelAttribute User user, @RequestParam("roles") String[] rolesFromHtml) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
         service.saveUser(user, rolesFromHtml);
         return "redirect:/admin/users";
     }
