@@ -3,8 +3,11 @@ package ru.kata.spring.boot_security.demo.service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -52,12 +55,9 @@ public class UserServiceImp implements UserService {
 
 
     @Override
-    public boolean saveUser(User user, String[] rolesFromHtml) {
-        Set<Role> roleSet = user.getRoles();
-        for (String roleId : rolesFromHtml) {
-            roleSet.add(roleDaoImp.findById(Long.valueOf(roleId)));
-        }
-        setEncryptedPassword(user);
+    public boolean saveUser(User user) {
+//        user.setRoles(user.getRoles());
+//        setEncryptedPassword(user);
         userDao.saveUser(user);
         return true;
     }
@@ -98,6 +98,15 @@ public class UserServiceImp implements UserService {
     @Override
     public User findByUsername(String username) {
         return userDao.findByUsername(username);
+    }
+
+    public boolean isAuthenticated() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || AnonymousAuthenticationToken.class.
+                isAssignableFrom(authentication.getClass())) {
+            return false;
+        }
+        return authentication.isAuthenticated();
     }
 
     public void setEncryptedPassword(User user) {

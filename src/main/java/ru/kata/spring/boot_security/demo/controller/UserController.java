@@ -5,9 +5,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import ru.kata.spring.boot_security.demo.dao.RoleDao;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
@@ -19,15 +21,21 @@ import java.security.Principal;
 public class UserController {
 
     public final UserService userService;
+    public final RoleDao roleDao;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, RoleDao roleDao) {
         this.userService = userService;
+        this.roleDao = roleDao;
     }
 
 
     @GetMapping(value = "/")
     public String getHomePage() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth == null) {
+            return "redirect:/login";
+        }
         return "index";
     }
 
@@ -48,7 +56,7 @@ public class UserController {
 
     @GetMapping(value = "/user")
     public String getUserPage(ModelMap map, Principal principal) {
-        map.addAttribute("authUser", getAuthorizedUser(principal));
+        map.addAttribute("user", getAuthorizedUser(principal));
         return "user";
     }
 

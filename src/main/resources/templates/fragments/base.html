@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.w3.org/1999/xhtml"
+      lang="ru">
+
+<!--HEAD-->
+<head th:fragment="head(title)">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet"
+          href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
+          integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+    <title th:replace="${title}">comm title</title>
+</head>
+<body>
+
+
+<!--HEADER-->
+<div th:fragment="header">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid text-white">
+            <span style=" font-weight: bold;" th:text="${user.email}"></span>
+            <span>&nbsp;</span>
+
+            <span th:text="'with roles'+':  '"></span>
+            <th:block th:each="role : ${user.roles}">
+                <span th:text="${role.name}"></span>&nbsp;
+            </th:block>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <div th:fragment="logout" class="ml-auto">
+                    <a style="color: #cccccc" href="/logout">Logout</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+</div>
+
+
+<!--LEFT-MENU-ADMIN-->
+<div th:fragment="navigation-admin" class="bg-white col-md-2">
+    <nav class="btn-group-vertical">
+        <a  type="button" class="btn btn-primary active" href="#adminArea" data-toggle="tab" id="adminAreaTab"
+            role="tab" aria-controls="adminArea" aria-selected="true">Admin</a>
+
+        <a type="button" class="btn btn-light" href="#userArea" data-toggle="tab" id="userAreaTab" role="tab"
+           aria-controls="userArea" aria-selected="false">User</a>
+    </nav>
+</div>
+<!--LEFT-MENU-USER-->
+<div th:fragment="navigation-user" class="bg-white col-md-2">
+    <nav class="btn-group-vertical">
+        <a type="button" class="btn btn-primary" href="#userArea" data-toggle="tab" id="userAreaTab" role="tab"
+           aria-controls="userArea" aria-selected="false">User</a>
+    </nav>
+</div>
+
+
+<div th:fragment="js">
+    <!-- Optional JavaScript -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+            integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+            crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"
+            integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+            crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"
+            integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+            crossorigin="anonymous"></script>
+</div>
+
+</body>
+</html>

@@ -9,10 +9,11 @@ import java.util.List;
 
 @Transactional
 public interface UserService extends UserDetailsService {
-    boolean saveUser(User user, String[] rolesFromHtml);
+    boolean saveUser(User user);
     boolean deleteUser(Long id);
     User findUserById(Long id);
     void updateUser(User user);
     List<User> getUsers();
     User findByUsername(String username);
+    boolean isAuthenticated();
 }
