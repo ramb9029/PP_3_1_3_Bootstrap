@@ -21,12 +21,10 @@ import java.security.Principal;
 public class UserController {
 
     public final UserService userService;
-    public final RoleDao roleDao;
 
     @Autowired
     public UserController(UserService userService, RoleDao roleDao) {
         this.userService = userService;
-        this.roleDao = roleDao;
     }
 
 
@@ -70,7 +68,6 @@ public class UserController {
     }
 
     private User getAuthorizedUser(Principal principal) {
-//        return (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
         return userService.findByUsername(principal.getName());
     }
 }

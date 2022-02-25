@@ -56,8 +56,7 @@ public class UserServiceImp implements UserService {
 
     @Override
     public boolean saveUser(User user) {
-//        user.setRoles(user.getRoles());
-//        setEncryptedPassword(user);
+        setEncryptedPassword(user);
         userDao.saveUser(user);
         return true;
     }

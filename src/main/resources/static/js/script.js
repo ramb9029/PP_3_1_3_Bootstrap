@@ -78,7 +78,7 @@ function switchAddForm() {
 }
 
 function getAllUsers() {
-    fetch('admin/api/users').then(function (response) {
+    fetch('/api/users').then(function (response) {
         if (response.ok) {
             response.json().then(users => {
                 usersTable.empty();
@@ -132,7 +132,7 @@ function updateUser(id) {
         'roles': checkEditRoles()
     };
 
-    let request = new Request('admin/api/users/', {
+    let request = new Request('/api/users/', {
         method: 'PUT',
         headers: headers,
         body: JSON.stringify(user)
@@ -154,7 +154,7 @@ function updateUser(id) {
 }
 
 function loadModalForm(id, editMode = true) {
-    fetch('admin/api/user/' + id, {method: 'GET'}).then(function (response) {
+    fetch('/api/user/' + id, {method: 'GET'}).then(function (response) {
         response.json().then(function (user) {
             userForm.find('#id').val(id);
             userForm.find('#name').val(user.username);
@@ -179,7 +179,7 @@ function loadModalForm(id, editMode = true) {
                 readonlyValue();
             }
             //!!!!
-            fetch('admin/api/roles').then(function (response) {
+            fetch('/api/roles').then(function (response) {
                 if (response.ok) {
                     userForm.find('#roles').empty();
                     response.json().then(roleList => {
@@ -210,7 +210,7 @@ function saveUser() {
     headers.append('Content-Type', 'application/json; charset=utf-8');
 
     let user = {
-        'name': userAddForm.find('#newName').val(),
+        'username': userAddForm.find('#newName').val(),
         'lastName': userAddForm.find('#newLastName').val(),
         'email': userAddForm.find('#newEmail').val(),
         'age': userAddForm.find('#newAge').val(),
@@ -218,7 +218,7 @@ function saveUser() {
         'roles': checkAddRoles()
     };
 
-    let request = new Request('admin/api/users/', {
+    let request = new Request('/api/users/', {
         method: 'POST',
         headers: headers,
         body: JSON.stringify(user)
@@ -234,7 +234,7 @@ function saveUser() {
 }
 
 function deleteUser(id) {
-    fetch('admin/api/user/' + id, {method: 'DELETE'}).then(function () {
+    fetch('/api/user/' + id, {method: 'DELETE'}).then(function () {
         userForm.modal('hide');
         usersTable.find('#userRow\\[' + id + '\\]').remove();
     });
